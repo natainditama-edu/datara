@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kalkulator Data Mining | Primakara University</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="app-header" style="padding: 18px 0 14px 0">
+      <div class="container header-inner">
+        <div>
+          <h1 class="brand-title" style="font-size: 22px">Kalkulator Data Mining</h1>
+          <p class="brand-subtitle" style="font-size: 13px">Perhitungan Naive Bayes dan Regresi Linear dari File Excel</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container main-content" style="padding: 20px 0 40px 0">
+      <!-- Card Input & Kontrol -->
+      <div class="card" style="padding: 20px; margin-bottom: 20px">
+        <div class="card-header" style="margin-bottom: 14px; padding-bottom: 10px">
+          <div>
+            <h2 class="card-title" style="font-size: 16px">Input Data Excel (.xlsx)</h2>
+            <p class="card-desc">Gunakan sampel Dataset 03 atau unggah file Excel sendiri dengan sheet data_training dan data_testing.</p>
+          </div>
+          <div>
+            <button id="exportExcelBtn" class="btn btn-success" style="padding: 8px 16px; font-size: 13px">Unduh Hasil Excel</button>
+          </div>
+        </div>
+
+        <!-- Quick Action Toolbar -->
+        <div class="controls-row" style="margin-top: 0; margin-bottom: 14px">
+          <button id="btnLoadSample03" class="btn btn-primary" style="padding: 8px 16px; font-size: 13px">Muat Sampel: Dataset 03 (Stress Mahasiswa)</button>
+
+          <div style="display: flex; align-items: center; gap: 8px">
+            <label style="font-size: 12px; font-weight: 600; color: var(--gray-700)">Sampel Lain:</label>
+            <select id="presetDropdown" class="select-control" style="font-size: 12px; padding: 6px 10px">
+              <option value="">-- Pilih Sampel Lain --</option>
+              <option value="Dataset 01 Prediksi Omset Penjualan.xlsx">Dataset 01: Omset Penjualan (Regresi Linear)</option>
+              <option value="Dataset 02 Prediksi Biaya Service Kendaraan.xlsx">Dataset 02: Biaya Service Kendaraan (Regresi Linear)</option>
+              <option value="Dataset 03 Prediksi Tingkat Stress Mahasiswa_original.xlsx">Dataset 03: Stress Mahasiswa (Naive Bayes)</option>
+              <option value="Dataset 04 Prediksi Penyakit Anemia.xlsx">Dataset 04: Penyakit Anemia (Naive Bayes)</option>
+              <option value="Dataset 05 Prediksi Kunjungan Wisatawan.xlsx">Dataset 05: Kunjungan Wisatawan (Regresi Deret Waktu)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Upload Zone -->
+        <div id="dropzone" class="dropzone" style="padding: 20px 16px">
+          <input type="file" id="fileInput" accept=".xlsx, .xls" style="display: none" />
+          <div class="dropzone-title" style="font-size: 14px">Tarik dan lepas file Excel (.xlsx) di sini, atau klik untuk memilih file</div>
+          <div class="dropzone-desc" style="font-size: 12px; margin-top: 4px">Sistem otomatis membaca sheet data_training dan data_testing</div>
+        </div>
+
+        <!-- File Info Bar -->
+        <div id="fileInfoBar" class="file-info-bar" style="display: none; padding: 10px 14px; margin-top: 12px">
+          <div class="file-info-left" style="font-size: 13px">
+            <span>File aktif:</span>
+            <span id="currentFileName">Dataset 03 Prediksi Tingkat Stress Mahasiswa_original.xlsx</span>
+            <span id="detectedRolePill" class="role-pill role-klasifikasi">Klasifikasi (Naive Bayes)</span>
+          </div>
+          <div style="display: flex; gap: 10px; font-size: 12px">
+            <span id="trainRowCount">8 baris training</span>
+            <span>-</span>
+            <span id="testRowCount">2 baris testing</span>
+          </div>
+        </div>
+
+        <!-- Options Row -->
+        <div class="controls-row" style="margin-top: 12px; gap: 12px">
+          <div style="display: flex; align-items: center; gap: 6px">
+            <label style="font-size: 12px; font-weight: 600; color: var(--gray-700)">Mode Model:</label>
+            <select id="modeSelector" class="select-control" style="font-size: 12px; padding: 6px 10px">
+              <option value="klasifikasi">Klasifikasi (Naive Bayes)</option>
+              <option value="regresi">Estimasi / Peramalan (Regresi Linear)</option>
+            </select>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 6px">
+            <label style="font-size: 12px; font-weight: 600; color: var(--gray-700)">Metode Probabilitas:</label>
+            <select id="smoothingSelector" class="select-control" style="font-size: 12px; padding: 6px 10px">
+              <option value="laplace">Laplace Smoothing (Standar Orange Data Mining)</option>
+              <option value="pure">Metode Murni Teori (Slide Dosen)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Area (Dihasilkan oleh app.js) -->
+      <div id="resultsArea"></div>
+    </main>
+
+    <footer class="app-footer" style="padding: 16px 0">
+      <div class="container" style="font-size: 12px; color: var(--gray-500); text-align: center">Universitas Primakara - Mata Kuliah Data Mining</div>
+    </footer>
+
+    <script src="assets/xlsx.full.min.js"></script>
+    <script src="assets/sample_datasets.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
